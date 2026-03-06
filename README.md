@@ -2,7 +2,7 @@
 
 A developer dashboard built with React and Vite. Pulls live data from a headless WordPress REST API and the GitHub API — displays blog posts, portfolio items, repository stats, and commit activity charts. No backend required.
 
-**Live demo:** [esmondmccain.com/developer-dashboard](https://esmondmccain.com/developer-dashboard/)
+**Live demo:** [esmondmccain.com/headless-dashboard](https://esmondmccain.com/headless-dashboard/)
 
 ## Tech Stack
 
