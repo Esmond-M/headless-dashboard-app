@@ -55,7 +55,7 @@ export default function GitHub() {
     .slice(0, 8)
     .map((r) => ({ name: r.name.replace(/[-_]/g, ' '), stars: r.stargazers_count }));
 
-  // Commit frequency: events grouped by week
+  // Push frequency: events grouped by week (payload.size unavailable for unauthenticated requests)
   const weekMap = {};
   events.forEach((e) => {
     if (e.type !== 'PushEvent') return;
@@ -63,12 +63,12 @@ export default function GitHub() {
     const weekStart = new Date(d);
     weekStart.setDate(d.getDate() - d.getDay());
     const key = weekStart.toISOString().slice(0, 10);
-    weekMap[key] = (weekMap[key] ?? 0) + (e.payload?.size ?? e.payload?.commits?.length ?? 0);
+    weekMap[key] = (weekMap[key] ?? 0) + (e.payload?.size > 0 ? e.payload.size : 1);
   });
-  const commitData = Object.entries(weekMap)
+  const pushData = Object.entries(weekMap)
     .sort(([a], [b]) => a.localeCompare(b))
     .slice(-12)
-    .map(([week, commits]) => ({ week: week.slice(5), commits }));
+    .map(([week, pushes]) => ({ week: week.slice(5), pushes }));
 
   const filtered = search
     ? repos.filter((r) => r.name.toLowerCase().includes(search.toLowerCase()))
@@ -96,19 +96,19 @@ export default function GitHub() {
         </div>
       )}
 
-      {commitData.length > 0 && (
+      {pushData.length > 0 && (
         <div className="section">
-          <div className="section-title">Commit Activity (last 12 weeks)</div>
+          <div className="section-title">Push Activity (last 12 weeks)</div>
           <div className="chart-wrap">
             <ResponsiveContainer width="100%" height={180}>
-              <BarChart data={commitData} margin={{ top: 4, right: 4, bottom: 4, left: -20 }}>
+              <BarChart data={pushData} margin={{ top: 4, right: 4, bottom: 4, left: -20 }}>
                 <XAxis dataKey="week" tick={{ fill: 'var(--color-muted)', fontSize: 11 }} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fill: 'var(--color-muted)', fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
                 <Tooltip
                   contentStyle={{ background: 'var(--color-surface2)', border: '1px solid var(--color-border)', borderRadius: '6px', fontSize: '0.8rem' }}
                   cursor={{ fill: 'rgba(255,255,255,0.04)' }}
                 />
-                <Bar dataKey="commits" fill="var(--color-primary)" radius={[3, 3, 0, 0]} />
+                <Bar dataKey="pushes" fill="var(--color-primary)" radius={[3, 3, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
