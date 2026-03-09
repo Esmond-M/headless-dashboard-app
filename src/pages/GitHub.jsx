@@ -63,7 +63,7 @@ export default function GitHub() {
     const weekStart = new Date(d);
     weekStart.setDate(d.getDate() - d.getDay());
     const key = weekStart.toISOString().slice(0, 10);
-    weekMap[key] = (weekMap[key] ?? 0) + (e.payload?.commits?.length ?? 0);
+    weekMap[key] = (weekMap[key] ?? 0) + (e.payload?.size ?? e.payload?.commits?.length ?? 0);
   });
   const commitData = Object.entries(weekMap)
     .sort(([a], [b]) => a.localeCompare(b))

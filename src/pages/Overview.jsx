@@ -14,7 +14,7 @@ function formatRelative(dateStr) {
 
 function eventLabel(event) {
   if (event.type === 'PushEvent') {
-    const count = event.payload?.commits?.length ?? 0;
+    const count = event.payload?.size ?? event.payload?.commits?.length ?? 0;
     return `Pushed ${count} commit${count !== 1 ? 's' : ''} to ${event.repo.name}`;
   }
   if (event.type === 'CreateEvent') return `Created ${event.payload.ref_type} in ${event.repo.name}`;
